@@ -1,0 +1,352 @@
+create table VENDOR
+(
+V_CODE int primary key,
+V_NAME varchar(15),
+V_CONTACT varchar (50),
+V_AREACODE varchar (3),
+V_PHONE varchar(8),
+V_STATE varchar(2),
+V_ORDER varchar(1));
+
+INSERT INTO VENDOR VALUES ('21225','Bryson, Inc.','Smithson','615','223-3234','TN','Y');
+INSERT INTO VENDOR VALUES ('21226','SuperLoo, INC.','Flushing','904','215-8895','FL','N');
+INSERT INTO VENDOR VALUES ('21231','D&E Supply','Singh','615','228-3245','TN','Y');
+
+select *
+from VENDOR;
+
+create table PurchaseOrder
+
+--FILLING IN PARTIAL DATA TABLE
+--V_CODE 40 V_NAME JOHN SMITH
+INSERT INTO VENDOR VALUES('40','JOHN SMITH',NULL,NULL,NULL,NULL,NULL);
+
+--
+UPDATE VENDOR
+SET V_STATE = 'TN'
+WHERE V_CODE = '35';
+
+UPDATE VENDOR
+SET V_NAME = 'JANE SMITH'
+WHERE V_CODE = '40';
+
+select *
+from VENDOR;
+
+DELETE VENDOR
+WHERE V_CODE = '35' OR V_CODE = '40';
+
+--ADDING A COLUMN TO TABLE, V_RATE DECIMAL 4,2
+
+ALTER TABLE VENDOR
+ADD V_RATE DECIMAL (4,2);
+
+--DELETING COLUMN FROM TABLE
+ALTER TABLE VENDOR
+DROP COLUMN V_RATE;
+
+
+--CHANGING V_RATE TO (6,2)
+ALTER TABLE VENDOR
+ALTER COLUMN V_RATE DECIMAL(6,2);
+
+DROP TABLE VENDOR;
+DROP TABLE PURCHASEORDER;
+
+
+SELECT * FROM VENDOR;
+
+--CREATE TABLE TEST1
+--PK TESTINO INT
+--TEST_DESC VARCHAR(20)
+
+--TABLE TEST2
+--TABLE INT
+--TESTNO FK FROM TEST1
+
+CREATE TABLE TEST1(
+TESTNO INT PRIMARY KEY,
+TEST_DESC VARCHAR(20));
+
+CREATE TABLE TEST2(
+TEST INT PRIMARY KEY,
+TESTNO INT FOREIGN KEY REFERENCES TEST1(TESTNO));
+
+-- ADD DATA TO TEST1 TESTN0 = 1, TEST_DESC NULL
+INSERT INTO TEST1(TESTNO) VALUES (1);
+--ADD DATA TO TEST1 TESTNO = 2, TEST_DESC NULL
+INSERT INTO TEST1 VALUES (2,NULL);
+
+--ADD COLUMN TO TABLE, TEST_PRICE DECIMAL (4,2)
+ALTER TABLE TEST1
+ADD TEST_PRICE DECIMAL (4,2);
+
+--CHANGE DATA WITHIN TABLE, TEST PRICE FOR TEST 1 IS 10
+UPDATE TEST1
+SET TEST_PRICE = 10
+WHERE TESTNO = 1;
+
+--CHANGE DATA TYPE OF A COLUMN, TEST PRICE DECIMAL (6,2,)
+ALTER  TABLE TEST1
+ALTER COLUMN TEST_PRICE DECIMAL (6,2);
+
+--DELETE COLUMN FROM TABLE, TESTING TEST_DESC
+ALTER TABLE TEST1
+DROP COLUMN TEST_DESC;
+
+--DELETE TABLE TESTING
+DROP TABLE IF EXISTS TEST1;
+DROP TABLE TEST2;
+
+SELECT * FROM TEST1;
+
+--1. List the item ID, description, and price for all items.
+SELECT ITEM_ID, DESCRIPTION, PRICE
+FROM ITEM;
+
+
+--2. List all rows and columns for the complete INVOICES table.
+
+--3.List the first and last names of customers with credit limits of $1,000 or more.
+
+--4.List the order number for each order placed by customer number 125 on 11/15/2021. (Hint: If you need help, use the discussion of the DATE data type in Figure 3-19 in Module 3.)
+
+--5.List the number and name of each customer represented by sales rep 10 or sales rep 15.
+
+
+
+
+--6. List the item ID and description
+-- of each item that is not in category HDR. <>
+SELECT ITEM_ID, DESCRIPTION
+FROM ITEM 
+WHERE ITEM_ID <> 'HDR';
+
+--7. List the Item ID, descriotion, and number of units on hand
+-- for each item that has between 10 and 30 units on hand,
+-- including both 10 and 30.
+-- Provide two alternate SQL statements to produce the same results.
+SELECT ITEM_ID, DESCRIPTION, ON_HAND
+FROM ITEM
+WHERE ON_HAND >=10 AND ON_HAND <=30;
+
+--8. List the item ID, description, and on-hand value (units on hand * unit price) of each item in category CAT. (On-hand value is technically units on hand * cost, but there is no COST column in the ITEM table.) Assign the name ON_HAND_VALUE to the computed column.
+SELECT ITEM_ID, DESCRIPTION, (ON_HAND * PRICE) AS ON_HAND_VALUE
+FROM ITEM
+WHERE CATEGORY = 'CAT';
+
+SELECT ITEM_ID, DESCRIPTION, ON_HAND, PRICE
+FROM ITEM
+WHERE CATEGORY = 'CAT';
+
+
+--9. List the item ID, description, and on-hand value for each item where the on-hand value is at least $1,500. Assign the name ON_HAND_VALUE to the computed column.
+--10. Use the IN operator to list the item ID and description of each item in category FSH or BRD.
+SELECT ITEM_ID, DESCRIPTION
+FROM ITEM
+WHERE CATEGORY IN ('FSH', 'BRD');
+
+--11. Find the ID, first name, and last name of each customer whose first name begins with the letter “S.”
+SELECT CUST_ID, FIRST_NAME, LAST_NAME
+FROM CUSTOMER
+WHERE FIRST_NAME LIKE 'S%';
+
+
+--12. List all details about all items. Order the output by description.
+SELECT *
+FROM ITEM
+ORDER BY DESCRIPTION;
+
+SELECT  *
+FROM ITEM
+ORDER BY DESCRIPTION DESC;
+-- 13. List all details about all items. 
+--Order the output by item ID within location. 
+--(That is, order the output by location and then by item ID.)
+SELECT *
+FROM ITEM 
+ORDER BY LOCATION, ITEM_ID;
+--14. How many customers have balances that are more than their credit limits?
+SELECT COUNT (*)
+FROM CUSTOMER
+WHERE BALANCE > CREDIT_LIMIT;
+
+SELECT * FROM CUSTOMER;
+
+--15. Find the total of the balances 
+--for all customers represented by sales rep 10 
+--with balances that are less than their credit limits.
+SELECT SUM(BALANCE)
+FROM CUSTOMER
+WHERE REP_ID = '10' 
+AND BALANCE < CREDIT_LIMIT;
+--16. List the item ID, description, and on-hand 
+--value of each item whose number of units on hand is 
+--more than the average number of units on hand for all items. (Hint: Use a subquery.)
+SELECT AVG(ON_HAND)
+FROM ITEM; --18.6
+
+SELECT ITEM_ID, DESCRIPTION, ON_HAND
+FROM ITEM 
+WHERE ON_HAND > (SELECT AVG(ON_HAND)
+FROM ITEM);
+
+--17.What is the price of the least expensive item in the database?
+SELECT MIN(PRICE)
+FROM ITEM
+--18. What is the item ID, description, and 
+--price of the least expensive item in the database? (Hint: Use a subquery.)
+SELECT ITEM_ID, DESCRIPTION, PRICE
+FROM ITEM
+WHERE PRICE = (SELECT MIN(PRICE)
+FROM ITEM);
+
+--19.List the sum of the balances of all customers 
+--for each sales rep. Order and group the results by sales rep ID.
+SELECT SUM(BALANCE) AS BALANCE, REP_ID
+FROM CUSTOMER
+GROUP BY REP_ID
+ORDER BY REP_ID;
+
+
+--20 List the sum of the balances of all customers for each sales rep
+--but restrict the output to those sales reps 
+--for which the sum is more than $150. Order the results by sales rep ID.
+
+SELECT SUM(BALANCE) AS BALANCE, REP_ID
+FROM CUSTOMER 
+GROUP BY REP_ID
+HAVING SUM(BALANCE) > 150
+ORDER BY REP_ID;
+
+--21.List the item ID of any item with an unknown description.
+SELECT ITEM_ID, DESCRIPTION
+FROM ITEM
+WHERE DESCRIPTION = NULL;
+
+--22. LIST ALL ITEM_ID, DESCRIPTION AND CATEGORY FOR THOSE ITEMS 
+-- IN THE CATEGORY OF 'DOG' OR 'CAT' AND
+-- DESCRIPTION CONTAINING THE WORD "Small"
+SELECT ITEM_ID, DESCRIPTION, CATEGORY
+FROM ITEM
+WHERE ((CATEGORY ='DOG') OR (CATEGORY = 'CAT'))
+AND DESCRIPTION LIKE '%Small%';
+
+--23. IN AN EFFORT TO PROMOTE PRODUCTS, WE WANT TO SEE THE ITEMS,
+-- DESCRIPTION, CURRENT PRICE, AND DISCOUNTED PRICE (FULL PRICE MINUS 10%)
+SELECT ITEM_ID, DESCRIPTION, PRICE, (PRICE * 0.90) AS DISCOUNTED_PRICE
+FROM ITEM;
+
+
+--REQ
+SELECT
+FROM
+--OPTIONAL
+WHERE
+GROUP BY
+HAVING
+ORDER BY
+
+DROP TABLE CUSTOMER;
+DROP TABLE SALES_REP;
+
+DROP TABLE IF EXISTS CUSTOMER;
+CREATE TABLE CUSTOMER
+(
+   CUST_ID CHAR(3) PRIMARY KEY,
+   FIRST_NAME VARCHAR(20),
+   LAST_NAME VARCHAR(20),
+   ADDRESS VARCHAR(20),
+   CITY VARCHAR(15),
+   STATE CHAR(2),
+   POSTAL CHAR(5),
+   EMAIL VARCHAR(30),
+   BALANCE DECIMAL(7,2),
+   CREDIT_LIMIT DECIMAL (7,2),
+   REP_ID CHAR(2)
+);
+
+INSERT INTO CUSTOMER VALUES('125','Joey'    ,'Smith',     '17 Fourth St',      'Cody',     'WY','82414','jsmith17@example.com',    80.68 ,500.00   ,'05');              
+INSERT INTO CUSTOMER VALUES('182','Billy'   ,'Rufton',    '21 Simple Cir',     'Garland',  'WY','82435','billyruff@example.com',   43.13 ,750.00   ,'10');              
+INSERT INTO CUSTOMER VALUES('227','Sandra'  ,'Pincher',   '53 Verde Ln',       'Powell',   'WY','82440','spinch2@example.com',     156.38,500.00   ,'15');              
+INSERT INTO CUSTOMER VALUES('294','Samantha','Smith',     '14 Rock Ln',        'Ralston',  'WY','82440','ssmith5@example.com',     58.60 ,500.00   ,'10');              
+INSERT INTO CUSTOMER VALUES('314','Tom'     ,'Rascal',    '1 Rascal Farm Rd',  'Cody',     'WY','82414','trascal3@example.com',    17.25 ,250.00   ,'15');              
+INSERT INTO CUSTOMER VALUES('375','Melanie' ,'Jackson',   '42 Blackwater Way', 'Elk Butte','WY','82433','mjackson5@example.com',   252.25,250.00   ,'05');              
+INSERT INTO CUSTOMER VALUES('435','James'   ,'Gonzalez',  '16 Rockway Rd',     'Wapiti',   'WY','82450','jgonzo@example.com',      230.40,1000.00  ,'15');              
+INSERT INTO CUSTOMER VALUES('492','Elmer'   ,'Jackson',   '22 Jackson Farm Rd','Garland',  'WY','82435','ejackson4@example.com',   45.20 ,500.00   ,'10');              
+INSERT INTO CUSTOMER VALUES('543','Angie'   ,'Hendricks', '27 Locklear Ln',    'Powell',   'WY','82440','ahendricks7@example.com', 315.00,750.00   ,'05');              
+INSERT INTO CUSTOMER VALUES('616','Sally'   ,'Cruz',      '199 18th Ave',      'Ralston',  'WY','82440','scruz5@example.com',      8.33  ,500.00   ,'15');              
+INSERT INTO CUSTOMER VALUES('721','Leslie'  ,'Smith',     '123 Sheepland Rd',  'Elk Butte','WY','82433','lsmith12@example.com',    166.65,1000.00  ,'10');              
+INSERT INTO CUSTOMER VALUES('795','Randy'   ,'Blacksmith','75 Stream Rd',      'Cody',     'WY','82414','rblacksmith6@example.com',61.50 ,500.00   ,'05');              
+
+DROP TABLE IF EXISTS ITEM;
+CREATE TABLE ITEM
+(
+   ITEM_ID  CHAR(4) PRIMARY KEY,
+   DESCRIPTION VARCHAR(30),
+   ON_HAND NUMERIC,
+   CATEGORY CHAR(3),
+   LOCATION CHAR(1),
+   PRICE DECIMAL(7,2)
+);
+                                                     
+INSERT INTO ITEM VALUES('AD72','Dog Feeding Station'           ,'12','DOG','B',79.99 );
+INSERT INTO ITEM VALUES('BC33','Feathers Bird Cage (12x24x18)' ,'10','BRD','B',79.99 );
+INSERT INTO ITEM VALUES('CA75','Enclosed Cat Litter Station'   ,'15','CAT','C',39.99 );
+INSERT INTO ITEM VALUES('DT12','Dog Toy Gift Set'              ,'27','DOG','B',39.99 );
+INSERT INTO ITEM VALUES('FM23','Fly Mask with Ears'            ,'41','HOR','C',24.95 );
+INSERT INTO ITEM VALUES('FS39','Folding Saddle Stand'          ,'12','HOR','C',39.99 );
+INSERT INTO ITEM VALUES('FS42','Aquarium (55 Gallon)'          ,'5','FSH','A',124.99);
+INSERT INTO ITEM VALUES('KH81','Wild Bird Food (25 lb)'        ,'24','BRD','C',19.99 );
+INSERT INTO ITEM VALUES('LD14','Locking Small Dog Door'        ,'14','DOG','A',49.99 );
+INSERT INTO ITEM VALUES('LP73','Large Pet Carrier'             ,'23','DOG','B',59.99 );
+INSERT INTO ITEM VALUES('PF19','Pump & Filter Kit'             ,'5','FSH','A',74.99 );
+INSERT INTO ITEM VALUES('QB92','Quilted Stable Blanket'        ,'32','HOR','C',119.99);
+INSERT INTO ITEM VALUES('SP91','Small Pet Carrier'             ,'18','CAT','B',39.99 );
+INSERT INTO ITEM VALUES('UF39','Underground Fence System'      ,'7','DOG','A',199.99);
+INSERT INTO ITEM VALUES('WB49','Insulated Water Bucket'        ,'34','HOR','C',79.99 );
+                               
+DROP TABLE IF EXISTS INVOICES;
+CREATE TABLE INVOICES
+(
+    INVOICE_NUM CHAR(5) PRIMARY KEY,
+    INVOICE_DATE DATE,
+    CUST_ID CHAR(3)
+);
+
+
+INSERT INTO INVOICES VALUES('14216','2021-11-15','125');      
+INSERT INTO INVOICES VALUES('14219','2021-11-15','227');      
+INSERT INTO INVOICES VALUES('14222','2021-11-16','294');      
+INSERT INTO INVOICES VALUES('14224','2021-11-16','182');      
+INSERT INTO INVOICES VALUES('14228','2021-11-18','435');      
+INSERT INTO INVOICES VALUES('14231','2021-11-18','125');      
+INSERT INTO INVOICES VALUES('14233','2021-11-18','435');      
+INSERT INTO INVOICES VALUES('14237','2021-11-19','616');      
+
+
+DROP TABLE IF EXISTS INVOICE_LINE;
+CREATE TABLE INVOICE_LINE
+(
+   INVOICE_NUM CHAR(5),
+   ITEM_ID CHAR(4),
+   QUANTITY NUMERIC,
+   QUOTED_PRICE DECIMAL(7,2),
+   PRIMARY KEY (INVOICE_NUM, ITEM_ID)
+);
+
+INSERT INTO INVOICE_LINE VALUES('14216','CA75',3,37.99 );               
+INSERT INTO INVOICE_LINE VALUES('14219','AD72',2,79.99 );               
+INSERT INTO INVOICE_LINE VALUES('14219','DT12',4,39.99 );               
+INSERT INTO INVOICE_LINE VALUES('14222','LD14',1,47.99 );               
+INSERT INTO INVOICE_LINE VALUES('14224','KH81',4,18.99 );               
+INSERT INTO INVOICE_LINE VALUES('14228','FS42',1,124.99);               
+INSERT INTO INVOICE_LINE VALUES('14228','PF19',1,74.99 );               
+INSERT INTO INVOICE_LINE VALUES('14231','UF39',2,189.99);               
+INSERT INTO INVOICE_LINE VALUES('14233','KH81',1,19.99 );               
+INSERT INTO INVOICE_LINE VALUES('14233','QB92',4,109.95);               
+INSERT INTO INVOICE_LINE VALUES('14233','WB49',4,74.95 );               
+INSERT INTO INVOICE_LINE VALUES('14237','LP73',3,54.95 ); 
+
+
+COMMIT TRANSACTION;                     
